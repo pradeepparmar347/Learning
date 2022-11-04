@@ -1,0 +1,15 @@
+Chapter 5: Indexing and Aggregation Pipeline
+
+Introduction to Data Modeling
+    Data in MongoDB has a flexible schema. Collections do not enforce document structure by default. This flexibility gives you data-modeling choices to match your application and its performance requirements.
+
+    MongoDB doesn't enforce how data is organized by default.
+    So how can we decide what structure to use to store our data?
+    Where should we create subdocuments?
+    And where should we use arrays of values?
+    At which point should the data get its own collection?
+    Making these decisions about the shape and structure of your data is called data modeling.
+    More specifically, data modeling is a way to organize fields in a document to support your application
+    performance and querying capabilities.
+
+    data modeling with MongoDB, data that is accessed together should be stored together.

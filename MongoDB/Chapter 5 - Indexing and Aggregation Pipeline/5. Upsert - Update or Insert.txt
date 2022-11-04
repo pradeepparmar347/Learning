@@ -1,0 +1,14 @@
+Chapter 5: Indexing and Aggregation Pipeline
+
+Upsert - Update or Insert?
+
+    Update if exists or Insert if dose'nt exists or does'nt matches criteria
+
+    db.iot.updateOne(
+        { "sensor": r.sensor, "date": r.date, "valcount": { "$lt": 48 } },
+        { "$push": 
+            { "readings": { "v": r.value, "t": r.time } },
+            "$inc": { "valcount": 1, "total": r.value } 
+        },
+        { "upsert": true }
+    )

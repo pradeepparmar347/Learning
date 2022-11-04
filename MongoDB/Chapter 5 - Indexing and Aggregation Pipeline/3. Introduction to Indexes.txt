@@ -1,0 +1,21 @@
+Chapter 5: Indexing and Aggregation Pipeline
+
+Introduction to Indexes
+    https://www.mongodb.com/docs/v5.0/indexes/?_ga=2.37195232.1926463286.1667311335-1691168424.1665041282
+
+    Indexes are data structures that support the efficient execution of queries in MongoDB. They contain copies of parts of the data in documents to make queries more efficient.
+
+    By using an index to limit the number of documents MongoDB scans, queries can be more efficient and therefore return faster.
+
+    When all the fields specified in the query criteria and projection of a query are indexed, MongoDB returns results directly from the index without scanning any documents in the collection or loading them into memory.
+
+    To improve query performance, build indexes on fields that appear often in your application's queries and operations that return sorted results. Each index that you add consumes disk space and memory when active so you should track index memory and disk usage for capacity planning. In addition, when a write operation updates an indexed field, MongoDB also has to update the related index.
+
+
+    db.trips.find({ "birth year": 1989 })
+
+    db.trips.find({ "start station id": 476 }).sort( { "birth year": 1 } )
+
+    db.trips.createIndex({ "birth year": 1 })
+
+    db.trips.createIndex({ "start station id": 1, "birth year": 1 })

@@ -1,0 +1,23 @@
+Chapter 5: Indexing and Aggregation Pipeline
+
+sort() and limit()
+
+    use sample_training
+
+    db.zips.find().sort({ "pop": 1 }).limit(1)
+
+    db.zips.find({ "pop": 0 }).count()
+
+    db.zips.find().sort({ "pop": -1 }).limit(1)
+
+    db.zips.find().sort({ "pop": -1 }).limit(10)
+
+    db.zips.find().sort({ "pop": 1, "city": -1 })
+
+    sort first, then limit regardless of the order in query
+
+Quiz 1: sort() and limit()
+    Problem:
+        Which of the following commands will return the name and founding year for the 5 oldest companies in the sample_training.companies collection?
+
+    db.trips.find({"birth year":{$ne:""}},{"birth year": 1, _id:-1}).sort({"birth year": -1}).limit(1)

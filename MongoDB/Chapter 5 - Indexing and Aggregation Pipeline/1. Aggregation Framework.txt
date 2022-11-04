@@ -1,3 +1,60 @@
 Chapter 5: Indexing and Aggregation Pipeline
 
 Aggregation Framework
+
+    The aggregation framework, in its simplest form, is just another way to query data in MongoDB.
+    Everything we know how to do using the MongoDB query language can also be done using the aggregation framework.
+
+    Eg:
+        db.listingsAndReviews.find(
+            { "amenities": "Wifi" },
+            { "price": 1, "address": 1, "_id": 0 }
+        ).pretty()
+
+        db.listingsAndReviews.aggregate([
+            { "$match": { "amenities": "Wifi" } },
+            { "$project": { "price": 1, "address": 1, "_id": 0 } }
+        ]).pretty()
+
+    The reason for that is because sometimes we might want to aggregate, as in group
+    or modify our data in some way, instead of always just filtering for the right documents.
+    This means that you can perform operations other than finding and projecting data.
+    But you can also calculate using aggregation.
+
+    The aggregation framework works as a pipeline, where the order of actions in the pipeline matters.
+    And each action is executed in the order in which we list it. 
+    Meaning that we give our data to the pipeline on one end, then we describe how this pipeline is going
+    to treat our data using aggregation stages.
+    And then the transformed data emerges at the end of the pipeline.
+
+    With MQL, we can filter and update data.
+    With the aggregation framework, we can compute and reshape data.
+
+    $match
+        https://www.mongodb.com/docs/v4.4/reference/operator/aggregation/match/?_ga=2.99582430.1926463286.1667311335-1691168424.1665041282
+    $project
+    $group
+        ref: https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/group/?_ga=2.63342959.1926463286.1667311335-1691168424.1665041282
+        The $group stage separates documents into groups according to a "group key". The output is one document for each unique group key.
+
+        A group key is often a field, or group of fields. The group key can also be the result of an expression. Use the _id field in the $group pipeline stage to set the group key. See below for 
+        usage examples.
+
+        In the $group stage output, the _id field is set to the group key for that document.
+
+        The output documents can also contain additional fields that are set using 
+        accumulator expressions.
+
+        db.listingsAndReviews.aggregate([
+            { "$project": { "address": 1, "_id": 0 }},
+            { "$group": { "_id": "$address.country", "count": { "$sum": 1 } } }
+        ])
+
+Lab: Aggregation Framework
+    Problem:
+
+        What room types are present in the sample_airbnb.listingsAndReviews collection?
+
+db.listingsAndReviews.aggregate([
+    {$group: {_id: "$room_type", count: {"$sum": 1}}}
+])
