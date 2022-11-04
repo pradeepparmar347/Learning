@@ -1,0 +1,55 @@
+Chapter 4: Advanced CRUD Operations
+
+Lecture: Array Operators and Projection
+
+    We can pass fields that we want to be included in the result by passing second object specifying which fields we want of exclude
+
+    1 = include
+    0 = exclude
+
+    Use only 1's or 0's with an exception for _id field
+
+    Eg:
+        db.inventory.find( { status: "A" }, { item: 1, status: 1 } )
+        SELECT _id, item, status from inventory WHERE status = "A"
+
+
+    db.listingsAndReviews.find(
+        { "amenities": { 
+            "$size": 20, 
+            "$all": [ "Internet", "Wifi",  "Kitchen", "Heating", "Family/kid friendly", "Washer", "Dryer", "Essentials", "Shampoo", "Hangers", "Hair dryer", "Iron", "Laptop friendly workspace" ] 
+        }},
+        {"price": 1, "address": 1}  // fields we want to be included in the results
+    ).pretty()
+
+    How can we access elements in these sub documents of an array 
+        By using $elemMatch
+
+        db.grades.find(
+            { "class_id": 431 },
+            { "scores": { 
+                "$elemMatch": { "score": { "$gt": 85 } } 
+            }
+        }).pretty()
+
+        Here elemMatch is used in the projection part of the query, but it can also be used in the query part of the Find command as well.
+
+        db.grades.find({ "scores": { 
+            "$elemMatch": { "type": "extra credit" } 
+        }}).pretty()
+
+Lab: Array Operators and Projection
+    Problem:
+
+    How many companies in the sample_training.companies collection have offices in the city of Seattle?
+
+    db.companies.find({offices: {$elemMatch: {"city": "Seattle"}}}).count()
+
+    117
+
+Quiz: Array Operators and Projection
+    Problem:
+
+    Which of the following queries will return only the names of companies from the sample_training.companies collection that had exactly 8 funding rounds?
+
+    db.companies.find({funding_rounds: {$size: 8}}, {name: 1, _id: 0})
