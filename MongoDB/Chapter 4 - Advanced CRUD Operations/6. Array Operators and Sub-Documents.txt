@@ -2,3 +2,38 @@ Chapter 4: Advanced CRUD Operations
 
 Lecture: Array Operators and Sub-Documents
 
+    To query an array field by a specific element location or to query an element in sub-documents, MQL uses dot-notation to specify the address of these elements in the doc.
+
+    You can use dot-notation to go as deep into the nested document as you wish.
+
+    To use dot-notation with arrays, specify the position of the element in the array.
+
+Lab 1: Querying Arrays and Sub-Documents
+    Problem:
+
+        How many trips in the sample_training.trips collection started at stations that are to the west of the -74 longitude coordinate?
+
+        Longitude decreases in value as you move west.
+
+        Note: We always list the longitude first and then latitude in the coordinate pairs; i.e.
+
+        <field_name>: [ <longitude>, <latitude> ]
+
+    Solution: 
+        db.trips.find({"start station location.coordinates.0": {$lt: -74}}).count()
+        1928
+
+Lab 2: Querying Arrays and Sub-Documents
+    Problem:
+        How many inspections from the sample_training.inspections collection were conducted in the city of NEW YORK?
+
+    Solution:
+        db.inspections.find({"address.city":"NEW YORK"}).count()
+        18279
+
+Quiz: Querying Arrays and Sub-documents
+    Problem:
+
+        Which of the following queries will return the names and addresses of all listings from the sample_airbnb.listingsAndReviews collection where the first amenity in the list is "Internet"?
+
+        
