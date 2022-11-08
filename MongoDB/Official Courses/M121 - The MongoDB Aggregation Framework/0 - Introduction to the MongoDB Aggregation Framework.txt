@@ -1,0 +1,80 @@
+Lesson 0: Introduction and Aggregation Concepts / Learn
+
+    Expressive Filtering
+    Powerful data transformation
+    Statistical utilities & data analysis
+
+all in Single Operation
+
+mongosh "mongodb://cluster0-shard-00-00-jxeqq.mongodb.net:27017,cluster0-shard-00-01-jxeqq.mongodb.net:27017,cluster0-shard-00-02-jxeqq.mongodb.net:27017/aggregations?replicaSet=Cluster0-shard-0" --authenticationDatabase admin --tls -u m121 -p aggregations
+
+Video: The Concept of Pipelines
+    Flow like an assembly line
+    Arranged in multiple ways
+
+Video: Aggregation Structure and Syntax
+
+    https://www.mongodb.com/docs/manual/meta/aggregation-quick-reference/?_ga=2.251688969.1055797164.1667893254-1691168424.1665041282
+
+    In the db.collection.aggregate() method, pipeline stages appear in an array. Documents pass through the stages in sequence. All except the $out, $merge, and $geoNear stages can appear multiple times in a pipeline.
+
+    db.collection.aggregate( [ { <stage> }, ... ] )
+
+    db.orders.aggregate( [
+
+        // Stage 1: Filter pizza order documents by pizza size
+        {
+            $match: { size: "medium" }
+        },
+
+        // Stage 2: Group remaining documents by pizza name and calculate total quantity
+        {
+            $group: { _id: "$name", totalQuantity: { $sum: "$quantity" } }
+        }
+
+    ] )
+
+    Operators and Expressions
+
+    Operators   
+        Query: $in, $gte, $eq, etc.
+        Aggregation: $match, $group, $project, etc.
+
+    Expressions
+        are like functions, we provide parameters and they provide computed output
+        expressions can be composed to form powerful data transformation
+
+        Expressions can include field paths, literals, system variables, expression objects, and expression operators. Expressions can be nested.
+
+        Expression Objects
+            { <field1>: <expression1>, ... }
+        
+        Operator Expressions
+            { <operator>: [ <argument1>, <argument2> ... ] }
+
+        Arithmetic Expression Operators
+        Array Expression Operators
+        Boolean Expression Operators
+        Comparison Expression Operators
+        Conditional Expression Operators
+        Custom Aggregation Expression Operators
+        Data Size Expression Operators
+        Date Expression Operators
+        Literal Expression Operator
+        Miscellaneous Operators
+        Object Expression Operators
+        Set Expression Operators
+        String Expression Operators
+        Text Expression Operator
+        Trigonometry Expression Operators
+        Type Expression Operators
+        Accumulators ($group)
+        Accumulators (in Other Stages)
+        Variable Expression Operators
+
+        ref: https://www.mongodb.com/docs/v4.4/meta/aggregation-quick-reference/#std-label-aggregation-expressions
+
+
+        Field Path: "$fieldName"
+        System Variables: "$$UPPERCASE"
+        User Variables: "$$lowerCase"

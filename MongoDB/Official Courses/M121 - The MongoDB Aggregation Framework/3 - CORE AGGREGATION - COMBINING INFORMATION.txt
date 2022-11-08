@@ -1,0 +1,142 @@
+LESSON 3: CORE AGGREGATION - COMBINING INFORMATION
+
+    The $group Stage
+        The $group stage separates documents into groups according to a "group key". The output is one document for each unique group key.
+
+        A group key is often a field, or group of fields. The group key can also be the result of an expression. Use the _id field in the $group pipeline stage to set the group key.
+
+        In the $group stage output, the _id field is set to the group key for that document.
+
+        The output documents can also contain additional fields that are set using accumulator expressions.
+
+        The $group stage has the following prototype form:
+
+        {
+            $group: {
+                _id: <expression>, // Group key
+                <field1>: { <accumulator1> : <expression1> },
+                ...
+            }
+        }
+
+    Accumulator Stages with $project
+        preparing max_high manually
+            [
+                { $project: {
+                    _id: 0,
+                    max_high: { $reduce: {
+                        input: "$trends",
+                        initialValue: -Infinity,
+                        in: { $cond: [
+                                { $gt: ["$$this.avg_high_tmp", "$$value"] },
+                                "$$this.avg_high_tmp", 
+                                "$$value"
+                        ]}
+                    }}
+                }}
+            ]
+        Using $max accumulator
+            [{$project: {
+                _id: 0,
+                max_high: { $max: "$trends.avg_high_tmp"}
+            }}]
+    _____________________________________________________________________________________________________________
+   | Name        Description                                                                                     |
+   | $max        Returns the maximum of the specified expression or list of expressions for each document        |
+   | $min        Returns the minimum of the specified expression or list of expressions for each document        |
+   | $stdDevPop  Returns the population standard deviation of the input values.                                  |
+   | $stdDevSamp Returns the sample standard deviation of the input values.                                      |
+   | $sum        Returns a sum of numerical values. Ignores non-numeric values.                                  |
+   | $avg        Returns an average of the specified expression or list of expressions for each document. Ignores|
+   |             non-numeric values.                                                                             |
+   |_____________________________________________________________________________________________________________|
+
+
+    The $unwind Stage
+        Deconstructs an array field from the input documents to output a document for each element. Each output document is the input document with the value of the array field replaced by the element.
+
+        Syntax
+
+        Field Path Operand  (Short form)
+            You can pass the array field path to $unwind. When using this syntax, $unwind does not output a document if the field value is null, missing, or an empty array.
+
+            { $unwind: <field path> }
+
+            When you specify the field path, prefix the field name with a dollar sign $ and enclose in quotes.
+        Document Operand with Options   (Long form)
+            You can pass a document to $unwind to specify various behavior options.
+            {
+                $unwind: {
+                    path: <field path>,
+                    includeArrayIndex: <string>,
+                    preserveNullAndEmptyArrays: <boolean>
+                }
+            }
+
+        ref: https://www.mongodb.com/docs/manual/reference/operator/aggregation/unwind/?_ga=2.240343299.1055797164.1667893254-1691168424.1665041282
+
+    The $lookup Stage 
+        Performs a left outer join to a collection in the same database to filter in documents from the "joined" collection for processing. The $lookup stage adds a new array field to each input document. The new array field contains the matching documents from the "joined" collection. The $lookup stage passes these reshaped documents to the next stage.
+
+        Syntax
+
+        {
+            $lookup: {
+                from: <collection to join>,
+                localField: <field from the input documents>,
+                foreignField: <field from the documents of the "from" collection>,
+                as: <output array field>
+            }
+        }
+
+        ref: https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/?_ga=2.215169559.1055797164.1667893254-1691168424.1665041282
+
+    $graphLookup Introduction
+    $graphLookup: Simple Lookup
+    $graphLookup: Simple Lookup Reverse Schema
+    $graphLookup: maxDepth and depthField
+    $graphLookup: Cross Collection Lookup
+    $graphLookup: General Considerations
+        Performs a recursive search on a collection, with options for restricting the search by recursion depth and query filter.
+
+        The $graphLookup search process is summarized below:
+
+            1. Input documents flow into the $graphLookup stage of an aggregation operation.
+
+            2. $graphLookup targets the search to the collection designated by the from parameter (see below for full list of search parameters).
+
+            3. For each input document, the search begins with the value designated by startWith.
+
+            4. $graphLookup matches the startWith value against the field designated by connectToField in other documents in the from collection.
+
+            5. For each matching document, $graphLookup takes the value of the connectFromField and checks every document in the from collection for a matching connectToField value. For each match, $graphLookup adds the matching document in the from collection to an array field named by the as parameter.
+
+            This step continues recursively until no more matching documents are found, or until the operation reaches a recursion depth specified by the maxDepth parameter. $graphLookup then appends the array field to the input document. $graphLookup returns results after completing its search on all input documents.
+
+        $graphLookup has the following prototype form:
+            {
+                $graphLookup: {
+                    from: <collection>,
+                    startWith: <expression>,
+                    connectFromField: <string>,
+                    connectToField: <string>,
+                    as: <string>,
+                    maxDepth: <number>,
+                    depthField: <string>,
+                    restrictSearchWithMatch: <document>
+                }
+            }
+
+        Eg: 
+            1. Suppose we have a collection with child parent relationship for categories of food. These categories can have n levels of sub-categories. 
+
+            How to query all the sub-categories recursively to get all of its children listed. 
+
+            2. There are airports all over the world. Among these airports there are some that do not have a direct route to each other. So how to query possible routes we can take
+
+            We can use $graphLookup.
+
+
+
+
+        ref: https://www.mongodb.com/docs/rapid/reference/operator/aggregation/graphLookup/?_ga=2.42032805.1055797164.1667893254-1691168424.1665041282

@@ -1,0 +1,35 @@
+LESSON 2: BASIC AGGREGATION - UTILITY STAGES
+
+    $addFields (aggregation)
+        Definition 
+        
+        $addFields Adds new fields to documents. $addFields outputs documents that contain all existing fields from the input documents and newly added fields.
+
+        The $addFields stage is equivalent to a $project stage that explicitly specifies all existing fields in the input documents and adds the new fields.
+
+        $addFields has the following form:
+
+            { $addFields: { <newField>: <expression>, ... } }
+
+        Specify the name of each field to add and set its value to an aggregation expression. For more information on expressions, see Expressions.
+
+    $limit
+        db.solarSystem.aggregate([
+            { $project: { ... }},
+            {$limit: 5}
+        ])
+    $skip
+        db.solarSystem.aggregate([
+            { $project: { ... }},
+            {$skip: 5}
+        ])
+    $count
+        db.solarSystem.aggregate([
+            { $project: { ... }},
+            {$count: <fieldName>}
+        ])
+    $sort
+        db.solarSystem.aggregate([
+            { $project: { ... }},
+            {$sort: { <fieldName1>: -1, <fieldName2>: -1, ...}}
+        ])

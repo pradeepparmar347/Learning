@@ -1,0 +1,30 @@
+LESSON 1: BASIC AGGREGATION - $MATCH AND $PROJECT
+
+    $match
+        Filters the documents to pass only the documents that match the specified condition(s) to the next pipeline stage.
+
+        The $match stage has the following prototype form:
+
+            { $match: { <query> } }
+
+        $match takes a document that specifies the query conditions. The query syntax is identical to the read operation query syntax; i.e. $match does not accept raw aggregation expressions. Instead, use a $expr query  expression to include aggregation expression in  $match
+
+    $project (aggregation)
+        Definition $project Passes along the documents with the requested fields to the next stage in the  pipeline. The specified fields can be existing fields from the input documents or newly computed fields.
+
+        The $project stage has the following prototype form:
+
+            { $project: { <specification(s)> } }
+
+        The  $project takes a document that can specify the inclusion of fields, the suppression of the _id field, the addition of new fields, and the resetting of the values of existing fields. Alternatively, you may specify the exclusion of fields.
+
+    var pipeline =  db.movies.aggregate([
+        { $match: { 
+            imdb.rating: { $gte: 7 }, 
+            $or: [ {genres: "Crime"}, {genres: "Horror"}],
+            $or: [ { rated: "PG" }, { rated: "G" }], 
+            languages: { $all: ["English","Japanese"] }, 
+        }} 
+    ])
+
+db.movies.aggregate([ { $match: { imdb.rating: { $gte: 7 }, $or: [ {genres: "Crime"}, {genres: "Horror"}], $or: [ { rated: "PG" }, { rated: "G" }], languages: { $all: ["English","Japanese"] }, }} ])

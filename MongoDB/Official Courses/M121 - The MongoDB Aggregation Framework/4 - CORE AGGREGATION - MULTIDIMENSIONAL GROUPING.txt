@@ -1,0 +1,8 @@
+LESSON 4: CORE AGGREGATION - MULTIDIMENSIONAL GROUPING
+
+    Facets: Introduction
+    Facets: Single Facet Query
+    Facets: Manual Buckets
+    Facets: Auto Buckets
+    Facets: Multiple Facets
+    The $sortByCount Stage

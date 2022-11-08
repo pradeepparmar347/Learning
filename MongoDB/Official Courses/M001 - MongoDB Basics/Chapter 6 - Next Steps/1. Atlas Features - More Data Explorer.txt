@@ -1,0 +1,8 @@
+Chapter 6: Next Steps
+
+Atlas Features - More Data Explorer
+
+    We looked at the Performance Advisor
+    using the Indexes tab and the Aggregation Builder.
+    We also learned that Atlas provides
+    schema Anti-Pattern advisory and an advanced text search.
