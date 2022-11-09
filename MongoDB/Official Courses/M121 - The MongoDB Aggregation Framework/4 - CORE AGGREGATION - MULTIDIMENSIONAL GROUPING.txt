@@ -1,8 +1,82 @@
 LESSON 4: CORE AGGREGATION - MULTIDIMENSIONAL GROUPING
 
     Facets: Introduction
+        Analytics capability that allows user to filter data by applying Multiple filters and characterizations
+        Eg: In user catelog of LinkedIn
+            If we search for devs having "MongoDB" in their profile,
+            we can narrow down the search by applying more filters
     Facets: Single Facet Query
+        db.companies.aggregate([
+            { $match: { $text: { $search: 'Network' } } },
+            { $unwind: ""$offices },
+            { $match: { 'Offices.city': { $ne: '' } } },
+            { $sortByCount: { '$offices.city': { $ne: '' } } }
+        ])
     Facets: Manual Buckets
+        instead of grouping by exact values we use range of values
+        db.companies.aggregate([
+            { $match: { 'founded_year': { $gt: 1980 }, number_of_employees: { $ne: null } } },
+            {
+                $bucket: {
+                    'groupBy': number_of_employees,
+                    'boundries': [ 0, 20, 50, 100, 500, 1000, Infinity ]
+                }
+            }
+        ])
+
+        
+        db.companies.aggregate([
+            { $match: { 'founded_year': { $gt: 1980 }, number_of_employees: { $ne: null } } },
+            {
+                $bucket: {
+                    'groupBy': number_of_employees,
+                    'boundries': [ 0, 20, 50, 100, 500, 1000, Infinity ],
+                    'default': 'Other',
+                    'output': {
+                        'total': { $sum: 1 },
+                        'average': { $avg: '$number_of_employees' },
+                        'categories': { '$addToSet': '$categoryCode' }
+                    }
+                }
+            }
+        ])
     Facets: Auto Buckets
+        db.companies.aggregate([
+            { $match: { 'offices.city': 'New York' } },
+            {
+                $bucketAuto: {
+                    'groupBy': founded_year,
+                    'buckets': 5,
+                    'output': {
+                        'total': { $sum: 1 },
+                        'average': { $avg: '$number_of_employees' },
+                    },
+                    'granularity': 'R20'
+                }
+            }
+        ])
     Facets: Multiple Facets
+        sub-pipelining
+
+        db.companies.aggregate([
+            { $match: { $text: { $search: 'Databases' } } },
+            { $facet: {
+                'Categories': [{ $sortByCount: '$cate' }],
+                'Employees': [
+                    { $match: { 'founded_year': { $gt: 1980 } } },
+                    { $bucket: {
+                        'groupBy': '$number_of_employees',
+                        'boundries':  [ 0, 20, 50, 100, 500, 1000, Infinity ],
+                        'default': 'Other'
+                    } }
+                ],
+                'Founded': [
+                    { $match: { 'offices.city': 'New York' } },
+                    { $bucketAuto: {
+                        'groupBy': '$founded_year',
+                        'buckets': 5
+                    } }
+                ]
+            } }
+        ])
     The $sortByCount Stage
